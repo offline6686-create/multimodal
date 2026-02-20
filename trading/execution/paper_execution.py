@@ -2,8 +2,11 @@ import random
 import datetime
 
 from hashing.modules.hash_utils import generate_hash
+from balance.balance_manager import BalanceManager
 
 
+# Instancia global del balance
+balance_manager = BalanceManager(initial_balance=100000)
 
 
 def execute_trade(signal, price, lot_size):
@@ -18,8 +21,15 @@ def execute_trade(signal, price, lot_size):
 
     # Simulación de PnL
     pnl = random.uniform(-100, 150)
-
     print(f"PnL: {pnl:.2f}")
+
+    # Actualizar balance
+    balance_manager.update_balance(pnl)
+
+    # Mostrar métricas actualizadas
+    metrics = balance_manager.get_metrics()
+    print("Updated Balance Metrics:")
+    print(metrics)
 
     # Datos del trade para auditoría
     trade_data = {
@@ -34,12 +44,10 @@ def execute_trade(signal, price, lot_size):
     trade_hash = generate_hash(trade_data)
 
     # Guardar en auditoría
-    with open(
-        "trading/audit/trade_hashes.log",
-        "a"
-    ) as f:
+    with open("audit/trade_hashes.log", "a") as f:
         f.write(trade_hash + "\n")
 
     print("Trade Hash:", trade_hash)
     print("---------------------------")
 
+    return trade_data

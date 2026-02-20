@@ -3,11 +3,18 @@ from risk.position_sizing import calculate_position_size
 from execution.paper_execution import execute_trade
 from config.settings import ACCOUNT_BALANCE, RISK_PER_TRADE
 import yaml
-def load_ftmo_rules():
-    with open("trading/config/ftmo_rules.yaml", "r") as file:
-        rules = yaml.safe_load(file)
-    return rules
+from pathlib import Path
 
+
+def load_ftmo_rules():
+    # Ruta absoluta robusta
+    base_path = Path(__file__).resolve().parent
+    rules_path = base_path / "config" / "ftmo_rules.yaml"
+
+    with open(rules_path, "r") as file:
+        rules = yaml.safe_load(file)
+
+    return rules
 
 
 def main():
@@ -36,4 +43,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
